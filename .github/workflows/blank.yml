@@ -1,0 +1,54 @@
+name: Daily Version Check & Release
+on:
+  schedule:
+    # 每天 UTC 时间 0 点执行（对应北京时间 8 点）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 手动触发开关
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Current Remote Version
+        id: get_remote_version
+        run: |
+          # 抓取远程版本号
+          REMOTE_VERSION=$(curl -sSL "https://ss.jfglzs.icu/version.txt" | tr -d '[:space:]')
+          echo "remote_version=${REMOTE_VERSION}" >> $GITHUB_OUTPUT
+          # 读取本地记录的历史版本（无则创建空文件）
+          touch .last_version
+          LAST_VERSION=$(cat .last_version)
+          echo "last_version=${LAST_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Download Attachment Image
+        if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
+        run: |
+          curl -sSL -o "release-image.jpg" "https://ss.jfglzs.icu/2.jpg"
+
+      - name: Create Tag & Release
+        if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_remote_version.outputs.remote_version }}
+          name: "tag-${{ steps.get_remote_version.outputs.remote_version }}-beta-1-jpg"
+          body: "（图片下载好不要改后缀直接用解压软件打开就是软件）"
+          files: release-image.jpg
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Local Version Record
+        if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
+        run: |
+          echo ${{ steps.get_remote_version.outputs.remote_version }} > .last_version
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add .last_version
+          git commit -m "Update last version to ${{ steps.get_remote_version.outputs.remote_version }}"
+          git push
