@@ -4,6 +4,8 @@ on:
     # 每天 UTC 时间 0 点执行（对应北京时间 8 点）
     - cron: '0 0 * * *'
   workflow_dispatch: # 手动触发开关
+permissions:
+  contents: write
 
 jobs:
   check-version:
