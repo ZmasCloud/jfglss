@@ -36,7 +36,7 @@ jobs:
         with:
           tag_name: ${{ steps.get_remote_version.outputs.remote_version }}
           name: "tag-${{ steps.get_remote_version.outputs.remote_version }}-beta-1-jpg"
-          body: "（图片下载好不要改后缀直接用解压软件打开就是软件）"
+          body: "（图片下载好不要改后缀直接用解压软件打开就是软件）（系统自动爬取，如无法下载请到官网手动下载！）"
           files: release-image.jpg
           draft: false
           prerelease: true
