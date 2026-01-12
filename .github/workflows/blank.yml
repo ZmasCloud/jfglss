@@ -18,7 +18,7 @@ jobs:
         id: get_remote_version
         run: |
           # 抓取远程版本号
-          REMOTE_VERSION=$(curl -sSL "https://ss.jfglzs.icu/version.txt" | tr -d '[:space:]')
+          REMOTE_VERSION=$(curl -sSL "https://ss.jfglss.icu/version.txt" | tr -d '[:space:]')
           echo "remote_version=${REMOTE_VERSION}" >> $GITHUB_OUTPUT
           # 读取本地记录的历史版本（无则创建空文件）
           touch .last_version
@@ -28,7 +28,7 @@ jobs:
       - name: Download Attachment Image
         if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
         run: |
-          curl -sSL -o "release-image.jpg" "https://ss.jfglzs.icu/2.jpg"
+          curl -sSL -o "release-image.jpg" "https://ss.jfglss.icu/2.jpg"
 
       - name: Create Tag & Release
         if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
