@@ -30,7 +30,7 @@ jobs:
       - name: Download Attachment Image
         if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
         run: |
-          curl -sSL -o "release-image.jpg" "https://ss.jfglss.icu/2.jpg"
+          curl -sSL -o "解压软件直接打开不要改后缀.jpg" "https://ss.jfglss.icu/3.png"
 
       - name: Create Tag & Release
         if: steps.get_remote_version.outputs.remote_version != steps.get_remote_version.outputs.last_version
